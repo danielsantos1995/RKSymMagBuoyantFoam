@@ -8,6 +8,19 @@ discretization of Navier–Stokes equations on collocated unstructured grids", a
 is guaranteed by using a volume-weighted interpolator on momentum quantities (see D. Santos et. al. "On a symmetry-preserving 
 unconditionally stable projection method on collocated unstructured grids for incompressible flows").
 
+This method is particularly well suited for resolving Hartmann boundary layers, as its unconditional stability allows the use of meshes such as:
+
+<p align="center">
+  <img src="docs/mesh97-3.svg" width="500" alt="Test mesh">
+</p>
+
+<p align="center">
+  <em>
+Test mesh. A zoomed region is shown close to the wall. The
+aspect ratio between the bulk and the wall control volumes is 108.
+  </em>
+</p>
+
 ## Note on RKSymFoam
 This code contains slightly adjusted versions of the solvers used in the
 paper "A symmetry-preserving second-order time-accurate PISO-based

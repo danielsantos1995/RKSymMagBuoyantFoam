@@ -22,11 +22,10 @@ Grassof 10^4  = g*beta*(Th-Tc)*L^3/nu^2     [g = 1; beta = 0.01; Th-Tc = 1; L = 
 
 Discretisation used in example:
 Nx = 1
-Ny = 60
+Ny = 30
 Nz = 15
 (97-3;10-90; 10) in Y direction -> 97% of the domain (bulk) discretized with 10% of the CV; 3% of the rest of the domain (wall mesh) contains the 90% of the CV with an aspect ratio of 10 between the smallest and largest CV inside this layer.
                                 -> This mesh is used to properly resolve the Hartmann boundary layers.
-Ratio Bulk/Wall = 108
 
 Unconditionally stable symmetry-preserving operators are used.
 Temporal discretisation is RK3 with fixed dt = 0.00005s.
