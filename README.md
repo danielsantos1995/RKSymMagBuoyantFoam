@@ -11,12 +11,13 @@ unconditionally stable projection method on collocated unstructured grids for in
 This method is particularly well suited for resolving Hartmann boundary layers, as its unconditional stability allows the use of meshes such as:
 
 <p align="center">
-  <img src="docs/mesh97-3.svg" width="500" alt="Test mesh">
+  <img src="docs/mesh97-3.svg" width="850" alt="Test mesh">
 </p>
 
 <p align="center">
   <em>
-Test mesh. A zoomed region is shown close to the wall. The
+Example of a mesh with strong refinement near the walls for resolving the Hartmann boundary layers. 
+The right panel shows an enlarged view of the near-wall region.The
 aspect ratio between the bulk and the wall control volumes is 108.
   </em>
 </p>
