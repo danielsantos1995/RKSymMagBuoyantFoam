@@ -38,6 +38,9 @@ the method, please refer to these papers.
 
 ## Authors
 
+(RKSymMagBuoyantFoam) This code is a direct extension of the RKSymFoam by Daniel Santos, from the 
+University of the Bundeswehr Munich.
+
 (RKSymFoam) The main structure of the solver, including the Runge-Kutta schemes was
 developped by Edo Frederix, of the Nuclear Research and Consultancy Group
 (NRG), Westerduinweg 3, 1755 LE Petten, The Netherlands. The
@@ -46,9 +49,6 @@ of the Heat and Mass Transfer Technological Center, Technical University
 of Catalonia, C/Colom 11, 08222 Terrassa, Spain. The pseudo-symplectic
 schemes were added by Josep Plana-Riu, of the Heat and Mass Transfer
 Technological Center, Technical University of Catalonia. 
-
-(RKSymMagBuoyantFoam) This code is a direct extension of the RKSymFoam by Daniel Santos, from the 
-University of the Bundeswehr Munich.
 
 ## License
 
