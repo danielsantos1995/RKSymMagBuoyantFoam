@@ -1,12 +1,11 @@
 // Set up terms for Poisson equation
 volScalarField rAU(scheme.C()/UEqn.A());
 
-// Volumetric interpolation used, see references at top of RKSymFoam.C
+// Volumetric interpolation used, see references at top of RKSymMagBuoyantFoam.C
 surfaceScalarField rAUf(reverseLinear<scalar>(mesh).interpolate(rAU));
 
 volVectorField HbyA(constrainHbyA(UEqn.H()/UEqn.A(), U, p));
 
-// Volumetric interpolation used, see references at top of RKSymFoam.C
 surfaceScalarField phiHbyA(reverseLinear<vector>(mesh).dotInterpolate(mesh.Sf(), HbyA));
 
 constrainPressure(pCorr, U, phiHbyA, rAU);

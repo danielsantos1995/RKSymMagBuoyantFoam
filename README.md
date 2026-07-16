@@ -1,5 +1,14 @@
-# RKSymFoam
+# RKSymMagBuoyantFoam
 
+This code is an extension of RKSymFoam to handle magnetohydrodynamic (MHD) flows at low
+magnetic Reyolds numbers and buoyancy. It was developed by Daniel Santos (daniel.santos@unibw.de) as
+a direct extension of the RKSymFoam by Jannes Hopman (https://github.com/janneshopman/RKSymFoam).
+The basic collocated symmetry-preserving operators can be found in F.X Trias et. al. "Symmetry-preserving 
+discretization of Navier–Stokes equations on collocated unstructured grids", and the unconditional stability
+is guaranteed by using a volume-weighted interpolator on momentum quantities (see D. Santos et. al. "On a symmetry-preserving 
+unconditionally stable projection method on collocated unstructured grids for incompressible flows").
+
+## Note on RKSymFoam
 This code contains slightly adjusted versions of the solvers used in the
 paper "A symmetry-preserving second-order time-accurate PISO-based
 method." by E.M.J. Komen, J.A. Hopman, E.M.A. Frederix, F.X. Trias and
@@ -13,33 +22,31 @@ incompressible flow with improved energy-conservation properties." by
 F. Capuano, G. Coppola, L. Rández, and L. de Luca. For a description of 
 the method, please refer to these papers. 
 
-## RKSymMagFoam
-
-An extension of RKSymFoam to handle magnetohydrodynamic flows at low 
-magnetic Reynolds numbers is added in applications/solvers/RKSymMagFoam.
-This solver also includes a method to measure the checkerboard effect and,
-if desirable, use this measurement to dynamically counter-act the problem.
-This method is described in "Quantifying the checkerboard problem to 
-reduce numerical dissipation" by J.A. Hopman, D. Santos, À. 
-Alsalti-Baldellou, J. Rigola and F.X. Trias. A tutorial case for laminar 
-magnetohydrodynamic duct flows are available in cases/laminarMHDDuct, 
-where a separate README is available with more info.
-
 ## Authors
 
-The main structure of the solver, including the Runge-Kutta schemes was
+(RKSymFoam) The main structure of the solver, including the Runge-Kutta schemes was
 developped by Edo Frederix, of the Nuclear Research and Consultancy Group
 (NRG), Westerduinweg 3, 1755 LE Petten, The Netherlands. The
 symmetry-preserving method was applied to this structure by Jannes Hopman,
 of the Heat and Mass Transfer Technological Center, Technical University
 of Catalonia, C/Colom 11, 08222 Terrassa, Spain. The pseudo-symplectic
 schemes were added by Josep Plana-Riu, of the Heat and Mass Transfer
-Technological Center, Technical University of Catalonia.
+Technological Center, Technical University of Catalonia. 
+
+(RKSymMagBuoyantFoam) This code is a direct extension of the RKSymFoam by Daniel Santos, from the 
+University of the Bundeswehr Munich.
 
 ## License
 
-RKSymFoam is published under the GNU GPL Version 3 license, which can be
+RKSymMagBuoyantFoam is published under the GNU GPL Version 3 license, which can be
 found in the LICENSE file.
+
+## Citation
+
+If you use RKSymMagBuoyantFoam in your research, please cite:
+
+- J. Hopman, RKSymFoam (original framework)
+- D. Santos, RKSymMagBuoyantFoam (current extension)
 
 ## Prerequisites
 
@@ -58,103 +65,16 @@ tested and currently not supported.
 
 ## Test cases
 
-* All test cases can be found in the "cases" directory, including a
-Taylor-Green Vortex and a channel flow.
-* Both test cases contain a "templateCase" directory, which should be
-copied before running it from inside the new directory with:
+* The test case included is a 2D buoyant cavity in the presence of a strong horizontal magnetic field.
+A README is included in cases/buoyantMHDcavity to further explain the case and its validation.
 
-<pre>
-./run.sh &ltsolver&gt &ltsimulation type&gt &ltRunge-Kutta scheme&gt
-</pre> 
-
-* Solvers permitted by this script: "icoFoam", "pimpleFoam" and
-"RKSymFoam"
-* Simulation types permitted by this script: "LES", "laminar" (laminar
-should be selected to run DNS)
-* Runge-Kutta schemes permitted by this script: "BackwardEuler", "Kutta"
-(classical Runge-Kutta 3 scheme)
-* icoFoam does not read the \<simulation type\> and \<Runge-Kutta scheme\>
-arguments, so they can be omitted
-* pimpleFoam does not read the \<Runge-Kutta scheme\> argument, so it can
-be omitted
-* The user is encouraged to experiment with different settings after
-getting familiar with the structure of the code, to do so change the
-\<VAR*\> variables inside "system/controldict.m4",
-"constant/turbulenceProperties.m4" and "system/fvSolution.m4" and rename
-the files to omit the ".m4" extension. The case can now be run without the
-"run.sh" script, but simply as any other OpenFoam case.
 * The available Runge-Kutta schemes can be found in
 "libraries/RungeKuttaSchemes", the Butcher Tableaus are given in the
 "<\*.C>" file and a reference is given in the "<*.H>" file
 
-### Taylor-Green Vortex
+## Using RKSymMagBuoyantFoam in your own OpenFOAM cases
 
-* Demonstrating the loss of kinetic energy due to numerical dissipation
-over time
-* Validation cases: icoFoam and RKSymFoam using Backward Euler scheme 
-
-### Channel flow
-
-* Demonstrating accuracy of the solver to simulate turbulence
-* Demonstrating the ability to include LES models 
-* Validation cases:
-* DNS cases: icoFoam (Backward Euler) and RKSymFoam (Backward Euler and
-Runge-Kutta 3)
-* LES cases: pimpleFoam (Backward Euler) and RKSymFoam (Backward Euler and
-Runge-Kutta 3)
-* Run cases on 8 processors with the same command by first adjusting the
-following lines in "run.sh" to:
-
-<pre>
-#- Run serial
-#runApplication $(getApplication)
-
-#- Run parallel 
-runApplication decomposePar
-runParallel $(getApplication)
-runApplication reconstructPar
-</pre>
-
-### Post-processing
-
-* To post-process the cases, run "plot.py" from the 
-"cases/\<case\>/postProcess" directory using
-
-<pre>
-python plot.py
-</pre>
-
-* For example: To postprocess "\<run_directory\>/\<case_1_name\>" and 
-"\<run_directory\>/\<case_2_name\>", edit the \<runDir\> and \<solvers\> 
-variables in "plot.py" to:
-
-<pre>
-runDir = '&ltrun_directory&gt'
-
-solvers = ['&ltcase_1_name&gt', '&ltcase_2_name&gt']
-</pre>
-
-* Resulting plots will be found in the "postProcess/results" directory
-
-### Validation 
-
-* A set of predetermined cases was run and post-processed by the authors.
-* To run the same cases and reproduce the results, navigate to the
-"cases/validation" directory and run all cases with:
-
-<pre>
-./launchCases.sh
-</pre>
-
-* After completing the cases, run "plot.py" inside 
-"cases/\<case\>/postProcessing", the version of "plot.py" in this
-repository is set up to post-process the validation cases
-* The resulting plots can be compared with the results readily available
-in "cases/\<case\>/postProcessing/validationResults"
-
-## Using RKSymFoam in your own OpenFOAM cases
-
-* The entries in "system/fvSchemes" are not read by RKSymFoam, except
+* The entries in "system/fvSchemes" are not read by RKSymMagBuoyantFoam, except
 potentially for the turbulence model, all other schemes can be set to:
 
 <pre>
@@ -209,21 +129,6 @@ simulationType laminar;
 
 ## Contact & support
 
-For bug reports or support, feel free to contact Jannes Hopman at
-jannes.hopman@upc.edu. Please note that this code is not maintained nor
-regularly updated, and is only tested with OpenFOAM v2012. Questions
-related to other versions will thus not be answered. 
+For bug reports or support, feel free to contact Daniel Santos at
+daniel.santos@unibw.de. 
 
-## Disclaimer
-
-RKSymFoam is provided by the copyright holders and contributors "as-is"
-and any express or implied warranties, including, but not limited to, the
-implied warranties of merchantability and fitness for a particular purpose
-are disclaimed. In no event shall the copyright owner or contributors be
-liable for any direct, indirect, incidental, special, exemplary, or
-consequential damages (including, but not limited to, procurement of
-substitute goods or services; loss of use, data, or profits; or business
-interruption) however caused and on any theory of liability, whether in
-contract, strict liability, or tort (including negligence or otherwise)
-arising in any way out of the use of this software, even if advised of the
-possibility of such damage. 

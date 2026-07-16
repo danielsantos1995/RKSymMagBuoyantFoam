@@ -1,0 +1,179 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+scale   1;
+
+Ny 30;
+Nz 15;
+Ry 50;
+Rz 50;
+
+Nyh #calc "($Ny/2)";
+Nzh #calc "($Nz/2)";
+
+vertices
+(
+    (0   -0.5 -0.5)
+    (1   -0.5 -0.5)
+    (0    0 -0.5)
+    (1    0 -0.5)
+    (0    0.5 -0.5)
+    (1    0.5 -0.5)
+
+    (0   -0.5  0)
+    (1   -0.5  0)
+    (0    0  0)
+    (1    0  0)
+    (0    0.5  0)
+    (1    0.5  0)
+
+    (0   -0.5  0.5)
+    (1   -0.5  0.5)
+    (0    0  0.5)
+    (1    0  0.5)
+    (0    0.5  0.5)
+    (1    0.5  0.5)
+);
+
+blocks
+(
+    hex (0 1  3  2  6  7  9  8) (1 $Nyh $Nzh) simpleGrading
+	(
+	    (
+			(100 100 1) // % x-dir, % cells, exp. ratio
+		)
+	    (
+			(3 90 10) // % y-dir, % cells, exp. ratio
+			(97 10 1) // % y-dir, % cells, exp. ratio
+		)
+	    (
+			(100 100 1) // % z-dir, % cells, exp. ratio
+		)
+	)
+    hex (2 3  5  4  8  9 11 10) (1 $Nyh $Nzh) simpleGrading
+	(
+	    (
+			(100 100 1) // % x-dir, % cells, exp. ratio
+		)
+	    (
+			(97 10 1) // % y-dir, % cells, exp. ratio
+			(3 90 0.1) // % y-dir, % cells, exp. ratio
+		)
+	    (
+			(100 100 1) // % z-dir, % cells, exp. ratio
+		)
+	)
+    hex (6 7  9  8 12 13 15 14) (1 $Nyh $Nzh) simpleGrading 
+	(
+	    (
+			(100 100 1) // % x-dir, % cells, exp. ratio
+		)
+	    (
+			(3 90 10) // % y-dir, % cells, exp. ratio
+			(97 10 1) // % y-dir, % cells, exp. ratio
+		)
+	    (
+			(100 100 1) //0.5 % z-dir, % cells, exp. ratio
+		)
+	)
+    hex (8 9 11 10 14 15 17 16) (1 $Nyh $Nzh) simpleGrading 
+	(
+	    (
+			(100 100 1) // % x-dir, % cells, exp. ratio
+		)
+	    (
+			(97 10 1) // % y-dir, % cells, exp. ratio
+			(3 90 0.1) // % y-dir, % cells, exp. ratio
+		)
+	    (
+			(100 100 1) //0.5 % z-dir, % cells, exp. ratio
+		)
+	)
+);
+
+edges
+(
+);
+
+boundary
+(
+    inlet
+    {
+        type            cyclic;
+        neighbourPatch  outlet;
+        faces
+        (
+            ( 0  6  8  2)
+            ( 2  8 10  4)
+            ( 6 12 14  8)
+            ( 8 14 16 10)
+        );
+    }
+    outlet
+    {
+        type            cyclic;
+        neighbourPatch  inlet;
+        faces
+        (
+            ( 1  3  9  7)
+            ( 3  5 11  9)
+            ( 7  9 15 13)
+            ( 9 11 17 15)
+        );
+    }
+    lowerWall
+    {
+        type patch;
+        faces
+        (
+            ( 0  1  7  6)
+            ( 6  7 13 12)
+        );
+    }
+    upperWall
+    {
+        type patch;
+        faces
+        (
+            ( 4 10 11  5)
+            (10 16 17 11)
+        );
+    }
+    leftWall
+    {
+        type patch;
+        faces
+        (
+            ( 0  2  3  1)
+            ( 2  4  5  3)
+        );
+    }
+    rightWall
+    {
+        type patch;
+        faces
+        (
+            (12 13 15 14)
+            (14 15 17 16)
+        );
+    }
+);
+
+mergePatchPairs
+(
+);
+
+// ************************************************************************* //

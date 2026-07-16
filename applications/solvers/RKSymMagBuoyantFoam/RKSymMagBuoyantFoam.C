@@ -153,7 +153,6 @@ int main(int argc, char *argv[])
                     nuf = reverseLinear<scalar>(mesh).interpolate(turbulence->nuEff());
 
                     #include "UEqn.H"
-
                     // Similar to PISO inner iteration loop
                     while (scheme.innerLoop())
                     {
@@ -166,7 +165,8 @@ int main(int argc, char *argv[])
             // to be used in subsequent stages
             #include "store.H"
         }
-
+        
+        #include "TEqn.H"
         #include "PotEEqn.H"
 
         // Turbulence model is required, to run DNS, set:
@@ -180,7 +180,7 @@ int main(int argc, char *argv[])
 
         Info << "pcb "    << pcb    << endl;
         Info << "PotEcb " << PotEcb << endl;
-
+		
         runTime.write();
 
         Info << "ExecutionTime = " << runTime.elapsedCpuTime() << " s"

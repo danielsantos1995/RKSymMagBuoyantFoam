@@ -15,6 +15,7 @@ const volVectorField gradpn
 // possible fvOptions source term
 // and finally, in case of implicit scheme:
 // implicit convection and diffusion terms
+// Buoyant term is coded in order to select positive g
 if (scheme.explicitStage())
 {
     tUEqn =
@@ -23,6 +24,8 @@ if (scheme.explicitStage())
       ==
         scheme.K()
       - scheme.C()*gradpn*pnPredCoef
+      - scheme.C()*g*(rhok-scalar(1))
+      + scheme.C()*(J^B0)/rho
       + scheme.C()*fvOptions(U)
     );
 }
@@ -63,6 +66,8 @@ else
       + scheme.B()*UEqnSourceB
       + scheme.K()
       - scheme.C()*gradpn*pnPredCoef
+      + scheme.C()*(J^B0)/rho
+      - scheme.C()*g*(rhok-scalar(1))
       + scheme.C()*fvOptions(U)
     );
 }

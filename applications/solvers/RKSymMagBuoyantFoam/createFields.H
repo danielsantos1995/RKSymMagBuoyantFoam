@@ -81,7 +81,104 @@ dimensionedVector B0
     electromagneticProperties
 );
 
-Info<< "Reading field p\n" << endl;
+Info<< "Reading field U\n" << endl;
+
+volVectorField U
+(
+    IOobject
+    (
+        "U",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh
+);
+
+// Volumetric interpolation used, see references at top of RKSymFoam.C
+surfaceScalarField phi
+(
+    IOobject
+    (
+        "phi",
+        runTime.timeName(),
+        mesh,
+        IOobject::READ_IF_PRESENT,
+        IOobject::AUTO_WRITE
+    ),
+    reverseLinear<vector>(mesh).dotInterpolate(mesh.Sf(), U)
+);
+
+//Temperature fields and quantities
+// Thermal expansion coefficient [1/K]
+dimensionedScalar beta
+(
+    "beta",
+    dimless/dimTemperature,
+    transportProperties
+);
+ 
+// Reference temperature [K]
+dimensionedScalar TRef("TRef", dimTemperature, transportProperties);
+ 
+// Laminar Prandtl number
+dimensionedScalar Pr("Pr", dimless, transportProperties);
+ 
+// Turbulent Prandtl number
+dimensionedScalar Prt("Prt", dimless, transportProperties);
+
+Info<< "Reading field T\n" << endl;
+volScalarField T
+(
+    IOobject
+    (
+        "T",
+        runTime.timeName(),
+        mesh,
+        IOobject::MUST_READ,
+        IOobject::AUTO_WRITE
+    ),
+    mesh
+);
+
+volScalarField rhok
+(
+    IOobject
+    (
+        "rhok",
+        runTime.timeName(),
+        mesh
+    ),
+    1.0 - beta*(T - TRef)
+);
+
+Info<< "\nReading g" << endl;
+const meshObjects::gravity& g = meshObjects::gravity::New(runTime);
+
+Info<< "\nReading hRef" << endl;
+    uniformDimensionedScalarField hRef
+    (
+        IOobject
+        (
+            "hRef",
+            runTime.constant(),
+            mesh,
+            IOobject::READ_IF_PRESENT,
+            IOobject::NO_WRITE
+        ),
+        dimensionedScalar(dimLength, Zero)
+    );
+
+Info<< "Calculating field g.h\n" << endl;
+    dimensionedScalar ghRef
+    (
+        mag(g.value()) > SMALL
+      ? g & (cmptMag(g.value())/mag(g.value()))*hRef
+      : dimensionedScalar("ghRef", g.dimensions()*dimLength, 0)
+    );
+    volScalarField gh("gh", (g & mesh.C()) - ghRef);
+    surfaceScalarField ghf("ghf", (g & mesh.Cf()) - ghRef);
 
 volScalarField p
 (
@@ -127,35 +224,7 @@ volScalarField pn
     dimensionedScalar("pn", p.dimensions(), 0),
     p.boundaryField().types()
 );
-
-Info<< "Reading field U\n" << endl;
-
-volVectorField U
-(
-    IOobject
-    (
-        "U",
-        runTime.timeName(),
-        mesh,
-        IOobject::MUST_READ,
-        IOobject::AUTO_WRITE
-    ),
-    mesh
-);
-
-// Volumetric interpolation used, see references at top of RKSymFoam.C
-surfaceScalarField phi
-(
-    IOobject
-    (
-        "phi",
-        runTime.timeName(),
-        mesh,
-        IOobject::READ_IF_PRESENT,
-        IOobject::AUTO_WRITE
-    ),
-    reverseLinear<vector>(mesh).dotInterpolate(mesh.Sf(), U)
-);
+/////////////////////////////////////////////////////////////////////////////
 
 Info<< "Reading field PotE\n" << endl;
 volScalarField PotE
@@ -249,6 +318,7 @@ label pRefCell = 0;
 scalar pRefValue = 0.0;
 
 setRefCell(p, scheme.dict(), pRefCell, pRefValue);
+
 
 // Read the coefficient to determine the weight of the previous time step
 // in setting the electric potential predictor

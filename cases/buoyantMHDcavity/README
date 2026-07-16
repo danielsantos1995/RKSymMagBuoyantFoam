@@ -1,0 +1,56 @@
+Benchmark cases for MHD buoyant 2D cavity
+
+Physics:
+Cavity in y-z coordinates
+U flows in x direction (also gravity)
+B field in y direction 
+Temperature gradient can be parallel (top-bottom walls) or perpendicular (left-right walls)
+
+Boundary conditions:
+Cyclic in x
+Walls in y and z
+U: no slip
+p: zero gradient
+electric potential:
+    Conductive walls  -> zero gradient
+    (1) Parallel case: Temperature gradient y direction
+    (2) Perpendicular case: Temperature gradient z direction
+
+Non-dimensional quantities:
+Hartmann 500   = L*By*sqrt(sigma/(rho*nu))  [L = 1; By = 500; rho = 1; sigma = 0.001; nu = 0.001] 
+Grassof 10^4  = g*beta*(Th-Tc)*L^3/nu^2     [g = 1; beta = 0.01; Th-Tc = 1; L = 1; nu = 0.001] 
+
+Discretisation used in example:
+Nx = 1
+Ny = 60
+Nz = 15
+(97-3;10-90; 10) in Y direction -> 97% of the domain (bulk) discretized with 10% of the CV; 3% of the rest of the domain (wall mesh) contains the 90% of the CV with an aspect ratio of 10 between the smallest and largest CV inside this layer.
+                                -> This mesh is used to properly resolve the Hartmann boundary layers.
+Ratio Bulk/Wall = 108
+
+Unconditionally stable symmetry-preserving operators are used.
+Temporal discretisation is RK3 with fixed dt = 0.00005s.
+Solver parameters can all be found in system/fvSolution
+
+Analytical solution:
+An analytical solution for the gradient of the transverse velocity W at the cavity center exists for 
+    (1) The perpendicular case (temperature gradient and B perpendicular): dW/dZ = -Gr/2Ha
+    (2) The parallel case (temperature gradient and B parallel): dW/dZ = -Gr/Ha^2
+when Ha >> 1. W and Z denote the dimensionless transverse velocity and coordinate in the direction of the tempreature gradient, respectively non-dimensionalized by nu/L and L.
+These solutions are given in T. Tagawa, G. Authié and R. Moreau 2002 - Buoyant flow in long vertical enclosures in the presence of a strong horizontal magnetic field. Part 1. Fully-established flow.
+
+Run and post-process the case with:
+./run.sh <case>
+or
+./parallelrun.sh <case>
+where <case> is "perpendicular" or 'parallel'.
+
+Example result for the perpendicular case are shown in the output:
+
+Validation results
+------------------
+Boundary condition  = perpendicular
+Probe file          = postProcessing/sampleB/0/grad(U)
+Tensor component    = 7
+Analytical solution = 10
+Numerical solution  = 10.0752939

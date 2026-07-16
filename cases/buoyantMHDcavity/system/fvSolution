@@ -1,0 +1,97 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  v2012                                 |
+|   \\  /    A nd           | Website:  www.openfoam.com                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvSolution;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+solvers
+{
+    U
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-8;
+        relTol          0.0;
+    }
+
+    UFinal
+    {
+        $U;
+        tolerance       1e-8;
+        relTol          0;
+    }
+    
+    T
+    {
+        solver          PBiCGStab;
+        preconditioner  DILU;
+        tolerance       1e-8;
+        relTol          0.01;
+    }
+
+    TFinal
+    {
+        $T;
+        relTol          0;
+    }
+
+    "(p|pCorr)"
+    {
+        solver          GAMG;
+        smoother        GaussSeidel;//DIC;
+        relTol          0.001;
+        tolerance       0;
+	}
+
+    "(p|pCorr)Final"
+    {
+        $p;
+        smoother        DICGaussSeidel;
+        relTol          0;
+        tolerance       1e-6;
+    }
+
+    "(PotE|PotECorr)"
+    {
+        solver          PBiCGStab;
+        preconditioner  DIC;
+        tolerance       1e-9;
+        relTol          0;
+    }
+
+    "(PotE|PotECorr)Final"
+    {
+	$PotE;
+	tolerance       1e-09;
+        relTol          0;
+    }
+}
+
+RungeKutta
+{
+    scheme          Kutta;
+    nOuter          1;
+    nInner          1;
+    pnPredCoef      0;
+    pRefCell        0;
+    pRefValue       0;
+}
+
+PotE
+{
+    PotEnPredCoef   0;
+    PotERefCell     0;
+    PotERefValue    0;
+}
+// ************************************************************************* //
