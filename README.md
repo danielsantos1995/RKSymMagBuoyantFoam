@@ -13,12 +13,6 @@ incompressible flow with improved energy-conservation properties." by
 F. Capuano, G. Coppola, L. Rández, and L. de Luca. For a description of 
 the method, please refer to these papers. 
 
-## RKSymFoam with LES
-
-A separate branch RKSymLES is created for a version of RKSymFoam which 
-supports the usage of LES models. Models that are readily available in
-OpenFOAM are supported by this solver.
-
 ## RKSymMagFoam
 
 An extension of RKSymFoam to handle magnetohydrodynamic flows at low 
@@ -49,13 +43,13 @@ found in the LICENSE file.
 
 ## Prerequisites
 
-* OpenFOAM v2012. While it may compile against other versions, this is not
+* OpenFOAM v2412. While it may compile against other versions, this is not
 tested and currently not supported.
 * Python with numpy and matplotlib
 
 ## Usage
 
-* Make sure that OpenFOAM v2012 is loaded into your environment 
+* Make sure that OpenFOAM v2412 is loaded into your environment 
 * Compile all libraries and apps with
 
 <pre>
