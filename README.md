@@ -72,6 +72,17 @@ A README is included in cases/buoyantMHDcavity to further explain the case and i
 "libraries/RungeKuttaSchemes", the Butcher Tableaus are given in the
 "<\*.C>" file and a reference is given in the "<*.H>" file
 
+<p align="center">
+  <img src="docs/cavity_figure.svg" width="500" alt="2D enclosed buoyant cavity">
+</p>
+
+<p align="center">
+  <em>
+    2D enclosed buoyant cavity with conductive walls filled with liquid metal
+    under a strong horizontal magnetic field. Hartmann boundary layers are indicated.
+  </em>
+</p>
+
 ## Using RKSymMagBuoyantFoam in your own OpenFOAM cases
 
 * The entries in "system/fvSchemes" are not read by RKSymMagBuoyantFoam, except
